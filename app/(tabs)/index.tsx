@@ -94,6 +94,10 @@ export default function DashboardScreen() {
               <Text style={styles.streakIcon}>🔥</Text>
               <Text style={styles.streakValue}>{stats?.streak_days ?? 0}</Text>
             </View>
+            {/* Settings */}
+            <TouchableOpacity style={styles.settingsBtn} onPress={() => router.push('/settings')}>
+              <Ionicons name="settings-outline" size={20} color={Colors.textSecondary} />
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -265,6 +269,16 @@ const styles = StyleSheet.create({
   greeting: { color: Colors.textSecondary, fontSize: 14 },
   username: { color: Colors.textPrimary, fontSize: 22, fontWeight: '800', marginTop: 2 },
   headerRight: { flexDirection: 'row', gap: 10, alignItems: 'center' },
+  settingsBtn: {
+    width: 34,
+    height: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 17,
+    backgroundColor: Colors.bgCard,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
   currencyChip: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -219,6 +219,93 @@ export interface Transaction {
   created_at: string;
 }
 
+// ─── Pose Detection ──────────────────────────────────────────────────────────
+
+export type KeypointName =
+  | 'nose'
+  | 'left_eye' | 'right_eye'
+  | 'left_ear' | 'right_ear'
+  | 'left_shoulder' | 'right_shoulder'
+  | 'left_elbow' | 'right_elbow'
+  | 'left_wrist' | 'right_wrist'
+  | 'left_hip' | 'right_hip'
+  | 'left_knee' | 'right_knee'
+  | 'left_ankle' | 'right_ankle';
+
+export interface Keypoint {
+  x: number;
+  y: number;
+  score: number;
+  name: KeypointName;
+}
+
+export interface Pose {
+  keypoints: Keypoint[];
+  score: number;
+}
+
+export type RepPhase = 'up' | 'down' | 'idle';
+
+export interface RepState {
+  count: number;
+  phase: RepPhase;
+  lastAngle: number;
+}
+
+export type JointType = 'elbow' | 'knee' | 'hip' | 'shoulder' | 'time';
+
+export interface ExerciseRepConfig {
+  jointType: JointType;
+  /** Which side's joint to track; 'average' uses mean of both sides */
+  side: 'left' | 'right' | 'average';
+  /** Angle (°) that defines the "down" position */
+  downThreshold: number;
+  /** Angle (°) that defines the "up" / lockout position */
+  upThreshold: number;
+  /** Ideal joint angle at the bottom of the movement (for form scoring) */
+  idealDownAngle: number;
+  /** Ideal joint angle at the top of the movement */
+  idealUpAngle: number;
+  /** Human-readable joint description for form feedback */
+  jointLabel: string;
+}
+
+export interface FormFeedback {
+  score: number; // 0–100
+  issues: string[];
+  hint: string | null;
+}
+
+// ─── Camera Session ───────────────────────────────────────────────────────────
+
+export interface CameraSessionExercise {
+  exerciseId: string;
+  exerciseName: string;
+  targetSets: number;
+  targetReps: number | string; // number or "30s"
+  restSeconds: number;
+  config: ExerciseRepConfig;
+}
+
+export type CameraSessionPhase = 'exercising' | 'resting' | 'complete';
+
+export interface CameraSessionState {
+  exercises: CameraSessionExercise[];
+  currentExerciseIndex: number;
+  currentSet: number;
+  currentReps: number;
+  sessionPhase: CameraSessionPhase;
+  restSecondsLeft: number;
+  pose: Pose | null;
+  formFeedback: FormFeedback;
+  repState: RepState;
+  isModelReady: boolean;
+  isDetecting: boolean;
+  /** Accumulated logs per exercise slot */
+  formScores: number[];
+  totalElapsed: number;
+}
+
 // ─── Navigation ───────────────────────────────────────────────────────────────
 
 export type RootStackParamList = {

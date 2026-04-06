@@ -64,6 +64,17 @@ export default function RootLayout() {
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="onboarding" />
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen
+              name="workout-session"
+              options={{
+                animation: 'slide_from_bottom',
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="settings"
+              options={{ animation: 'slide_from_right' }}
+            />
           </Stack>
         </AuthGate>
       </SafeAreaProvider>

@@ -6,11 +6,13 @@ import {
   StyleSheet,
   Modal,
   Alert,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 
 import { useWorkoutStore } from '@/stores/workoutStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -45,6 +47,12 @@ export default function WorkoutScreen() {
     setModalVisible(false);
     await startWorkout(selectedWorkout, profile.id);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  };
+
+  const handleStartWithCamera = () => {
+    if (!selectedWorkout) return;
+    setModalVisible(false);
+    router.push({ pathname: '/workout-session', params: { workoutId: selectedWorkout.id } });
   };
 
   const handleFinish = async () => {
@@ -194,6 +202,19 @@ export default function WorkoutScreen() {
                   <Button title="Cancel" variant="ghost" size="md" onPress={() => setModalVisible(false)} />
                   <Button title="Start Workout 🚀" variant="primary" size="md" gradient onPress={handleStart} style={styles.startBtn} />
                 </View>
+
+                {/* Camera AI session */}
+                <Pressable style={styles.cameraBtn} onPress={handleStartWithCamera}>
+                  <LinearGradient
+                    colors={['#00CEC9', '#74B9FF']}
+                    style={styles.cameraBtnGrad}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  >
+                    <Ionicons name="camera" size={18} color="#fff" />
+                    <Text style={styles.cameraBtnText}>Start with AI Camera</Text>
+                  </LinearGradient>
+                </Pressable>
               </>
             )}
           </View>
@@ -312,5 +333,14 @@ const styles = StyleSheet.create({
   modalExDetail: { color: Colors.textMuted, fontSize: 13 },
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },
   startBtn: { flex: 1 },
+  cameraBtn: { borderRadius: 14, overflow: 'hidden' },
+  cameraBtnGrad: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 14,
+  },
+  cameraBtnText: { color: '#fff', fontSize: 15, fontWeight: '700' },
 });
 
