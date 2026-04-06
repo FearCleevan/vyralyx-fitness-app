@@ -140,7 +140,7 @@ export const MUSIC_TRACKS: MusicTrack[] = [
     title: 'Beast Mode',
     bpm: 150,
     energy: 3,
-    uri: null, // replace with: require('../../assets/audio/hype.mp3')
+    uri: require('../../assets/audio/hype.mp3'),
   },
 ];
 
