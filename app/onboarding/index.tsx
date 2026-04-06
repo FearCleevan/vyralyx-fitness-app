@@ -5,11 +5,11 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   Alert,
 } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
@@ -178,7 +178,7 @@ function StepGoal() {
   ];
   return (
     <View style={styles.stepContent}>
-      <Text style={styles.stepTitle}>What's your main goal?</Text>
+      <Text style={styles.stepTitle}> your main goal?</Text>
       <Text style={styles.stepSubtitle}>Your entire program will be optimized for this</Text>
       <View style={styles.optionsList}>
         {options.map((opt) => (
@@ -258,6 +258,7 @@ function validateStep(step: number, data: ReturnType<typeof useOnboardingStore.g
 const STEPS = [StepGender, StepBodyMetrics, StepFitnessLevel, StepEnvironment, StepGoal, StepSummary];
 
 export default function OnboardingScreen() {
+  const insets = useSafeAreaInsets();
   const { currentStep, totalSteps, nextStep, prevStep, submit, isSubmitting, data } =
     useOnboardingStore();
   const { user, fetchProfile } = useAuthStore();
@@ -306,24 +307,27 @@ export default function OnboardingScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Brand mark */}
-          <View style={styles.brandRow}>
-            <Text style={styles.brand}>VYRALYX</Text>
-            <StepIndicator total={totalSteps} current={currentStep} />
-          </View>
+        <View style={styles.contentWrap}>
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Brand mark */}
+            <View style={styles.brandRow}>
+              <Text style={styles.brand}>VYRALYX</Text>
+              <StepIndicator total={totalSteps} current={currentStep} />
+            </View>
 
-          {/* Step content */}
-          <StepComponent />
-        </ScrollView>
+            {/* Step content */}
+            <StepComponent />
+          </ScrollView>
+        </View>
 
         {/* Navigation buttons */}
-        <View style={styles.footer}>
-          {currentStep > 0 && (
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+          {currentStep > 0 ? (
             <Button
               title="Back"
               variant="ghost"
@@ -334,6 +338,8 @@ export default function OnboardingScreen() {
                 prevStep();
               }}
             />
+          ) : (
+            <View style={styles.backBtnSlot} />
           )}
           <Button
             title={isLastStep ? 'Build My Plan 🚀' : 'Continue'}
@@ -375,10 +381,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 2,
   },
+  contentWrap: {
+    flex: 1,
+  },
+  scroll: {
+    flex: 1,
+  },
   scrollContent: {
     flexGrow: 1,
     padding: 24,
     paddingTop: 16,
+    paddingBottom: 140,
   },
   brandRow: {
     flexDirection: 'row',
@@ -474,14 +487,22 @@ const styles = StyleSheet.create({
   },
   // Footer
   footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     flexDirection: 'row',
     gap: 12,
     padding: 24,
     paddingTop: 12,
+    backgroundColor: Colors.bg,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
   },
   backBtn: {
+    width: 80,
+  },
+  backBtnSlot: {
     width: 80,
   },
   nextBtn: {

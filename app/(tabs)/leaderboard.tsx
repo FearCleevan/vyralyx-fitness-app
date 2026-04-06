@@ -4,12 +4,12 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '@/stores/authStore';
 import { supabase } from '@/lib/supabase';
@@ -278,3 +278,4 @@ const styles = StyleSheet.create({
   empty: { alignItems: 'center', gap: 10, paddingVertical: 28 },
   emptyText: { color: Colors.textMuted, fontSize: 13, textAlign: 'center' },
 });
+

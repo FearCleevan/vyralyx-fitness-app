@@ -4,13 +4,13 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '@/stores/authStore';
 import { supabase } from '@/lib/supabase';
@@ -441,3 +441,4 @@ const styles = StyleSheet.create({
   packBonus: { color: Colors.success, fontSize: 12, fontWeight: '700' },
   packPrice: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
 });
+

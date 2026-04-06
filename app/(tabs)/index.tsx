@@ -4,10 +4,10 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,7 +29,7 @@ export default function DashboardScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    if (profile) {
+    if (profile?.fitness_level && profile.environment && profile.goal) {
       loadPlan(
         profile.fitness_level,
         profile.environment,
@@ -347,3 +347,4 @@ const styles = StyleSheet.create({
   emptyText: { color: Colors.textMuted, fontSize: 13, textAlign: 'center' },
   bottomPad: { height: 20 },
 });
+

@@ -4,13 +4,13 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   Modal,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useWorkoutStore } from '@/stores/workoutStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -313,3 +313,4 @@ const styles = StyleSheet.create({
   modalActions: { flexDirection: 'row', gap: 10, marginTop: 8 },
   startBtn: { flex: 1 },
 });
+

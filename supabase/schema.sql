@@ -29,12 +29,30 @@ CREATE TABLE IF NOT EXISTS profiles (
 -- Trigger to create profile on new auth user
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  base_username TEXT;
+  candidate_username TEXT;
+  suffix INT := 0;
 BEGIN
+  base_username := lower(
+    COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1))
+  );
+  base_username := regexp_replace(base_username, '[^a-z0-9_]', '', 'g');
+  IF length(base_username) = 0 THEN
+    base_username := 'user';
+  END IF;
+
+  candidate_username := base_username;
+  WHILE EXISTS (SELECT 1 FROM profiles WHERE username = candidate_username) LOOP
+    suffix := suffix + 1;
+    candidate_username := base_username || '_' || suffix::TEXT;
+  END LOOP;
+
   INSERT INTO profiles (id, email, username)
   VALUES (
     NEW.id,
     NEW.email,
-    COALESCE(NEW.raw_user_meta_data->>'username', split_part(NEW.email, '@', 1))
+    candidate_username
   );
   RETURN NEW;
 END;
@@ -67,7 +85,9 @@ CREATE OR REPLACE FUNCTION handle_new_profile()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO user_stats (user_id) VALUES (NEW.id);
-  INSERT INTO wallet (user_id, balance) VALUES (NEW.id, 100);
+  IF to_regclass('public.wallet') IS NOT NULL THEN
+    INSERT INTO wallet (user_id, balance) VALUES (NEW.id, 100);
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

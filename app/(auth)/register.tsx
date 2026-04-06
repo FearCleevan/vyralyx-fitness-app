@@ -4,13 +4,13 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
   Alert,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '@/lib/supabase';
@@ -25,8 +25,18 @@ export default function RegisterScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!username.trim() || !email.trim() || !password || !confirm) {
+    const normalizedUsername = username.trim().toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedUsername || !normalizedEmail || !password || !confirm) {
       Alert.alert('Missing fields', 'Please fill in all fields');
+      return;
+    }
+    if (!/^[a-z0-9_]{3,20}$/.test(normalizedUsername)) {
+      Alert.alert(
+        'Invalid username',
+        'Use 3-20 characters: lowercase letters, numbers, and underscore only'
+      );
       return;
     }
     if (password !== confirm) {
@@ -40,16 +50,50 @@ export default function RegisterScreen() {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signUp({
-        email: email.trim(),
+      const { data: existingUsername, error: usernameCheckError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', normalizedUsername)
+        .limit(1);
+
+      if (usernameCheckError) {
+        console.warn('Username availability check failed:', usernameCheckError);
+      } else if (existingUsername && existingUsername.length > 0) {
+        Alert.alert('Username taken', 'Please choose a different username');
+        return;
+      }
+
+      const firstAttempt = await supabase.auth.signUp({
+        email: normalizedEmail,
         password,
-        options: { data: { username: username.trim() } },
+        options: { data: { username: normalizedUsername } },
       });
-      if (error) throw error;
-      // New user → onboarding
+
+      if (firstAttempt.error) {
+        const rawMessage = firstAttempt.error.message ?? '';
+        const needsRetry = rawMessage.includes('Database error saving new user');
+
+        if (needsRetry) {
+          const fallbackUsername = `${normalizedUsername}_${Math.floor(Math.random() * 10000)}`;
+          const secondAttempt = await supabase.auth.signUp({
+            email: normalizedEmail,
+            password,
+            options: { data: { username: fallbackUsername } },
+          });
+          if (secondAttempt.error) throw secondAttempt.error;
+        } else {
+          throw firstAttempt.error;
+        }
+      }
+
       router.replace('/onboarding');
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Registration failed';
+      const err = e as { message?: string; code?: string; details?: string; hint?: string };
+      const raw = err?.message ?? 'Registration failed';
+      const details = err?.details ? `\nDetails: ${err.details}` : '';
+      const hint = err?.hint ? `\nHint: ${err.hint}` : '';
+      const code = err?.code ? `\nCode: ${err.code}` : '';
+      const msg = `${raw}${code}${details}${hint}`;
       Alert.alert('Registration Failed', msg);
     } finally {
       setIsLoading(false);
@@ -61,7 +105,7 @@ export default function RegisterScreen() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.flex}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <LinearGradient colors={Colors.gradient.primary} style={styles.logoBlock}>
-            <Text style={styles.logoEmoji}>⚡</Text>
+            <Text style={styles.logoEmoji}>+</Text>
           </LinearGradient>
           <Text style={styles.brand}>Join Vyralyx</Text>
           <Text style={styles.tagline}>Start your transformation today</Text>
@@ -113,7 +157,7 @@ export default function RegisterScreen() {
                 style={styles.input}
                 value={confirm}
                 onChangeText={setConfirm}
-                placeholder="••••••••"
+                placeholder="********"
                 placeholderTextColor={Colors.textMuted}
                 secureTextEntry
               />

@@ -12,15 +12,15 @@ export type FitnessGoal =
 export interface UserProfile {
   id: string;
   email: string;
-  username: string;
-  avatar_url?: string;
-  gender: Gender;
-  age: number;
-  weight_kg: number;
-  height_cm: number;
-  fitness_level: FitnessLevel;
-  environment: WorkoutEnvironment;
-  goal: FitnessGoal;
+  username: string | null;
+  avatar_url: string | null;
+  gender: Gender | null;
+  age: number | null;
+  weight_kg: number | null;
+  height_cm: number | null;
+  fitness_level: FitnessLevel | null;
+  environment: WorkoutEnvironment | null;
+  goal: FitnessGoal | null;
   onboarding_complete: boolean;
   created_at: string;
   updated_at: string;
@@ -140,11 +140,13 @@ export interface UserStats {
   xp_to_next_level: number;
   streak_days: number;
   longest_streak: number;
+  last_workout_date: string | null;
   total_workouts: number;
   total_duration_min: number;
   currency_balance: number;
-  rank_global?: number;
+  rank_global: number | null;
   rank_weekly?: number;
+  updated_at: string;
 }
 
 export interface Achievement {
@@ -211,8 +213,9 @@ export interface Transaction {
     | 'ad'
     | 'purchase'
     | 'store'
-    | 'battle_pass';
-  description: string;
+    | 'battle_pass'
+    | 'starter';
+  description: string | null;
   created_at: string;
 }
 

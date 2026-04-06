@@ -4,13 +4,13 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
   Alert,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '@/lib/supabase';
@@ -171,3 +171,4 @@ const styles = StyleSheet.create({
   registerText: { color: Colors.textSecondary, fontSize: 14 },
   registerLink: { color: Colors.primary, fontSize: 14, fontWeight: '700' },
 });
+
