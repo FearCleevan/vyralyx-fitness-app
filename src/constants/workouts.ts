@@ -1,0 +1,498 @@
+import type { Exercise, Workout, WorkoutPlan } from '../types';
+
+// ─── Exercise Library ─────────────────────────────────────────────────────────
+
+export const EXERCISES: Record<string, Exercise> = {
+  // Bodyweight / No Equipment
+  pushup: {
+    id: 'pushup',
+    name: 'Push-Up',
+    description: 'Classic upper-body compound movement',
+    muscle_groups: ['chest', 'triceps', 'shoulders'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Start in a high plank with hands shoulder-width apart',
+      'Lower your chest toward the floor, keeping elbows at ~45°',
+      'Push back up to full arm extension',
+    ],
+    tips: ['Keep your core braced throughout', 'Don\'t flare elbows wide'],
+  },
+  squat: {
+    id: 'squat',
+    name: 'Bodyweight Squat',
+    description: 'Fundamental lower-body movement',
+    muscle_groups: ['quads', 'glutes', 'hamstrings'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Stand with feet shoulder-width apart',
+      'Push hips back and bend knees, lowering thighs parallel to floor',
+      'Drive through heels back to standing',
+    ],
+    tips: ['Keep chest tall', 'Knees track over toes'],
+  },
+  plank: {
+    id: 'plank',
+    name: 'Plank',
+    description: 'Core stability hold',
+    muscle_groups: ['core'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Get in forearm plank position',
+      'Body forms a straight line from head to heels',
+      'Hold without sagging or piking hips',
+    ],
+    tips: ['Squeeze glutes', 'Breathe steadily'],
+  },
+  lunge: {
+    id: 'lunge',
+    name: 'Reverse Lunge',
+    description: 'Unilateral lower-body strength',
+    muscle_groups: ['quads', 'glutes', 'hamstrings'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Stand tall, step one foot back',
+      'Lower back knee toward the floor',
+      'Return to standing and alternate legs',
+    ],
+    tips: ['Keep front shin vertical', 'Don\'t let front knee cave'],
+  },
+  mountain_climber: {
+    id: 'mountain_climber',
+    name: 'Mountain Climbers',
+    description: 'Dynamic core + cardio exercise',
+    muscle_groups: ['core', 'shoulders'],
+    category: 'hiit',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Start in high plank',
+      'Drive one knee to chest, then alternate rapidly',
+    ],
+    tips: ['Keep hips level', 'Maintain steady rhythm'],
+  },
+  glute_bridge: {
+    id: 'glute_bridge',
+    name: 'Glute Bridge',
+    description: 'Posterior chain activation',
+    muscle_groups: ['glutes', 'hamstrings', 'core'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Lie on back, feet flat, knees bent',
+      'Drive hips up until body forms a straight line',
+      'Squeeze glutes at the top, lower slowly',
+    ],
+    tips: ['Press through heels', 'Don\'t hyperextend lower back'],
+  },
+  tricep_dip: {
+    id: 'tricep_dip',
+    name: 'Tricep Dip',
+    description: 'Bodyweight tricep isolation',
+    muscle_groups: ['triceps', 'shoulders'],
+    category: 'bodyweight',
+    equipment_needed: false,
+    difficulty: 'beginner',
+    instructions: [
+      'Sit on edge of chair/bench, hands gripping edge',
+      'Lower body by bending elbows to 90°',
+      'Press back up',
+    ],
+    tips: ['Keep elbows pointing back, not flared'],
+  },
+  burpee: {
+    id: 'burpee',
+    name: 'Burpee',
+    description: 'Full-body conditioning movement',
+    muscle_groups: ['full_body'],
+    category: 'hiit',
+    equipment_needed: false,
+    difficulty: 'intermediate',
+    instructions: [
+      'Stand, then drop into squat and place hands on floor',
+      'Jump feet back to plank, do a push-up',
+      'Jump feet forward, then explosively jump up with arms overhead',
+    ],
+    tips: ['Control your landing', 'Scale by removing the push-up if needed'],
+  },
+  // Gym Exercises
+  barbell_bench_press: {
+    id: 'barbell_bench_press',
+    name: 'Barbell Bench Press',
+    description: 'Primary chest pressing movement',
+    muscle_groups: ['chest', 'triceps', 'shoulders'],
+    category: 'strength',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Lie on bench, grip bar slightly wider than shoulder-width',
+      'Lower bar to chest with control',
+      'Press to full extension',
+    ],
+    tips: ['Retract shoulder blades', 'Plant feet firmly'],
+  },
+  barbell_squat: {
+    id: 'barbell_squat',
+    name: 'Barbell Back Squat',
+    description: 'King of lower-body compound lifts',
+    muscle_groups: ['quads', 'glutes', 'hamstrings', 'core'],
+    category: 'strength',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Bar rests on traps, feet shoulder-width',
+      'Break at hips and knees simultaneously',
+      'Reach depth, then drive up',
+    ],
+    tips: ['Brace core before descent', 'Keep chest up'],
+  },
+  deadlift: {
+    id: 'deadlift',
+    name: 'Conventional Deadlift',
+    description: 'Full posterior chain compound lift',
+    muscle_groups: ['back', 'glutes', 'hamstrings'],
+    category: 'strength',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Bar over mid-foot, hip-width stance',
+      'Hinge at hips, grip bar just outside legs',
+      'Drive floor away, lock out hips and knees simultaneously',
+    ],
+    tips: ['Keep bar close to body', 'Neutral spine throughout'],
+  },
+  pullup: {
+    id: 'pullup',
+    name: 'Pull-Up',
+    description: 'Upper-body pulling compound movement',
+    muscle_groups: ['back', 'biceps'],
+    category: 'bodyweight',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Dead hang from bar, overhand grip',
+      'Pull elbows down and back until chin clears bar',
+      'Lower with control',
+    ],
+    tips: ['Initiate with lats, not biceps', 'Full range of motion'],
+  },
+  overhead_press: {
+    id: 'overhead_press',
+    name: 'Overhead Press',
+    description: 'Shoulder pressing compound',
+    muscle_groups: ['shoulders', 'triceps'],
+    category: 'strength',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Hold bar at shoulder height, elbows forward',
+      'Press straight up until elbows lock out',
+      'Lower with control',
+    ],
+    tips: ['Squeeze glutes and core', 'Don\'t hyperextend lower back'],
+  },
+  romanian_deadlift: {
+    id: 'romanian_deadlift',
+    name: 'Romanian Deadlift',
+    description: 'Hamstring-focused hip hinge',
+    muscle_groups: ['hamstrings', 'glutes', 'back'],
+    category: 'strength',
+    equipment_needed: true,
+    difficulty: 'intermediate',
+    instructions: [
+      'Hold bar at hips, soft knee bend',
+      'Hinge at hips, lowering bar along legs',
+      'Feel hamstring stretch, then drive hips forward to stand',
+    ],
+    tips: ['Keep bar close to body', 'Stop when you feel tension, not discomfort'],
+  },
+};
+
+// ─── Workout Plans ─────────────────────────────────────────────────────────────
+
+export const WORKOUT_PLANS: WorkoutPlan[] = [
+  // ── BEGINNER / NO EQUIPMENT / FAT LOSS ────────────────────────────────────
+  {
+    id: 'plan_beginner_noequip_fatloss',
+    name: 'Ignite — Beginner Fat Burner',
+    description: '4-week bodyweight program designed to torch fat and build baseline fitness',
+    goal: 'fat_loss',
+    environment: 'no_equipment',
+    level: 'beginner',
+    duration_weeks: 4,
+    workouts_per_week: 4,
+    workouts: [
+      {
+        id: 'w_bnf_day1',
+        name: 'Full Body Ignite A',
+        description: 'Total-body circuit to elevate heart rate and burn calories',
+        duration_minutes: 35,
+        difficulty: 'beginner',
+        goal: 'fat_loss',
+        environment: 'no_equipment',
+        xp_reward: 120,
+        is_premium: false,
+        day_of_week: 1,
+        exercises: [
+          { exercise: EXERCISES.squat, sets: 3, reps: 15, rest_seconds: 45 },
+          { exercise: EXERCISES.pushup, sets: 3, reps: 10, rest_seconds: 45 },
+          { exercise: EXERCISES.mountain_climber, sets: 3, reps: '30s', rest_seconds: 30 },
+          { exercise: EXERCISES.lunge, sets: 3, reps: 12, rest_seconds: 45 },
+          { exercise: EXERCISES.plank, sets: 3, reps: '30s', rest_seconds: 30 },
+        ],
+      },
+      {
+        id: 'w_bnf_day2',
+        name: 'Cardio Burn Circuit',
+        description: 'High-rep bodyweight cardio to maximize calorie burn',
+        duration_minutes: 30,
+        difficulty: 'beginner',
+        goal: 'fat_loss',
+        environment: 'no_equipment',
+        xp_reward: 100,
+        is_premium: false,
+        day_of_week: 3,
+        exercises: [
+          { exercise: EXERCISES.burpee, sets: 4, reps: 8, rest_seconds: 60 },
+          { exercise: EXERCISES.mountain_climber, sets: 4, reps: '40s', rest_seconds: 30 },
+          { exercise: EXERCISES.squat, sets: 3, reps: 20, rest_seconds: 30 },
+          { exercise: EXERCISES.glute_bridge, sets: 3, reps: 15, rest_seconds: 30 },
+        ],
+      },
+      {
+        id: 'w_bnf_day3',
+        name: 'Full Body Ignite B',
+        description: 'Strength-focused bodyweight session',
+        duration_minutes: 35,
+        difficulty: 'beginner',
+        goal: 'fat_loss',
+        environment: 'no_equipment',
+        xp_reward: 120,
+        is_premium: false,
+        day_of_week: 5,
+        exercises: [
+          { exercise: EXERCISES.glute_bridge, sets: 3, reps: 20, rest_seconds: 30 },
+          { exercise: EXERCISES.pushup, sets: 4, reps: 12, rest_seconds: 45 },
+          { exercise: EXERCISES.lunge, sets: 3, reps: 14, rest_seconds: 45 },
+          { exercise: EXERCISES.tricep_dip, sets: 3, reps: 12, rest_seconds: 45 },
+          { exercise: EXERCISES.plank, sets: 3, reps: '45s', rest_seconds: 30 },
+        ],
+      },
+    ],
+  },
+
+  // ── BEGINNER / HOME / MUSCLE GAIN ─────────────────────────────────────────
+  {
+    id: 'plan_beginner_home_musclegain',
+    name: 'Foundations — Home Muscle Builder',
+    description: '4-week home workout plan to build lean muscle with minimal equipment',
+    goal: 'muscle_gain',
+    environment: 'home',
+    level: 'beginner',
+    duration_weeks: 4,
+    workouts_per_week: 3,
+    workouts: [
+      {
+        id: 'w_bhm_day1',
+        name: 'Push Day',
+        description: 'Chest, shoulders, and triceps',
+        duration_minutes: 40,
+        difficulty: 'beginner',
+        goal: 'muscle_gain',
+        environment: 'home',
+        xp_reward: 130,
+        is_premium: false,
+        day_of_week: 1,
+        exercises: [
+          { exercise: EXERCISES.pushup, sets: 4, reps: 12, rest_seconds: 60 },
+          { exercise: EXERCISES.tricep_dip, sets: 3, reps: 10, rest_seconds: 60 },
+          { exercise: EXERCISES.plank, sets: 3, reps: '40s', rest_seconds: 45 },
+        ],
+      },
+      {
+        id: 'w_bhm_day2',
+        name: 'Legs & Core',
+        description: 'Lower body and core strength',
+        duration_minutes: 40,
+        difficulty: 'beginner',
+        goal: 'muscle_gain',
+        environment: 'home',
+        xp_reward: 130,
+        is_premium: false,
+        day_of_week: 3,
+        exercises: [
+          { exercise: EXERCISES.squat, sets: 4, reps: 15, rest_seconds: 60 },
+          { exercise: EXERCISES.lunge, sets: 3, reps: 12, rest_seconds: 60 },
+          { exercise: EXERCISES.glute_bridge, sets: 4, reps: 18, rest_seconds: 45 },
+          { exercise: EXERCISES.plank, sets: 3, reps: '45s', rest_seconds: 45 },
+        ],
+      },
+      {
+        id: 'w_bhm_day3',
+        name: 'Full Body',
+        description: 'Total body compound session',
+        duration_minutes: 45,
+        difficulty: 'beginner',
+        goal: 'muscle_gain',
+        environment: 'home',
+        xp_reward: 150,
+        is_premium: false,
+        day_of_week: 5,
+        exercises: [
+          { exercise: EXERCISES.pushup, sets: 4, reps: 15, rest_seconds: 60 },
+          { exercise: EXERCISES.squat, sets: 4, reps: 15, rest_seconds: 60 },
+          { exercise: EXERCISES.glute_bridge, sets: 3, reps: 20, rest_seconds: 45 },
+          { exercise: EXERCISES.mountain_climber, sets: 3, reps: '30s', rest_seconds: 45 },
+          { exercise: EXERCISES.tricep_dip, sets: 3, reps: 12, rest_seconds: 45 },
+        ],
+      },
+    ],
+  },
+
+  // ── INTERMEDIATE / GYM / MUSCLE GAIN ──────────────────────────────────────
+  {
+    id: 'plan_inter_gym_musclegain',
+    name: 'Forge — Intermediate Hypertrophy',
+    description: '6-week gym program focused on progressive overload for muscle building',
+    goal: 'muscle_gain',
+    environment: 'gym',
+    level: 'intermediate',
+    duration_weeks: 6,
+    workouts_per_week: 4,
+    workouts: [
+      {
+        id: 'w_igm_day1',
+        name: 'Push — Chest & Shoulders',
+        description: 'Barbell and dumbbell push day',
+        duration_minutes: 60,
+        difficulty: 'intermediate',
+        goal: 'muscle_gain',
+        environment: 'gym',
+        xp_reward: 200,
+        is_premium: false,
+        day_of_week: 1,
+        exercises: [
+          { exercise: EXERCISES.barbell_bench_press, sets: 4, reps: 8, rest_seconds: 90, weight_kg: 60 },
+          { exercise: EXERCISES.overhead_press, sets: 4, reps: 10, rest_seconds: 90, weight_kg: 40 },
+          { exercise: EXERCISES.pushup, sets: 3, reps: 15, rest_seconds: 60 },
+          { exercise: EXERCISES.tricep_dip, sets: 3, reps: 12, rest_seconds: 60 },
+        ],
+      },
+      {
+        id: 'w_igm_day2',
+        name: 'Pull — Back & Biceps',
+        description: 'Barbell and bodyweight pull day',
+        duration_minutes: 60,
+        difficulty: 'intermediate',
+        goal: 'muscle_gain',
+        environment: 'gym',
+        xp_reward: 200,
+        is_premium: false,
+        day_of_week: 2,
+        exercises: [
+          { exercise: EXERCISES.deadlift, sets: 4, reps: 5, rest_seconds: 120, weight_kg: 80 },
+          { exercise: EXERCISES.pullup, sets: 4, reps: 8, rest_seconds: 90 },
+          { exercise: EXERCISES.romanian_deadlift, sets: 3, reps: 12, rest_seconds: 90, weight_kg: 50 },
+        ],
+      },
+      {
+        id: 'w_igm_day3',
+        name: 'Legs — Squat Focus',
+        description: 'Lower body strength and hypertrophy',
+        duration_minutes: 65,
+        difficulty: 'intermediate',
+        goal: 'muscle_gain',
+        environment: 'gym',
+        xp_reward: 220,
+        is_premium: false,
+        day_of_week: 4,
+        exercises: [
+          { exercise: EXERCISES.barbell_squat, sets: 5, reps: 5, rest_seconds: 120, weight_kg: 80 },
+          { exercise: EXERCISES.romanian_deadlift, sets: 3, reps: 12, rest_seconds: 90, weight_kg: 50 },
+          { exercise: EXERCISES.lunge, sets: 3, reps: 12, rest_seconds: 60 },
+          { exercise: EXERCISES.glute_bridge, sets: 3, reps: 15, rest_seconds: 60 },
+        ],
+      },
+      {
+        id: 'w_igm_day4',
+        name: 'Upper Body Power',
+        description: 'Compound upper-body power session',
+        duration_minutes: 55,
+        difficulty: 'intermediate',
+        goal: 'muscle_gain',
+        environment: 'gym',
+        xp_reward: 210,
+        is_premium: true,
+        day_of_week: 6,
+        exercises: [
+          { exercise: EXERCISES.overhead_press, sets: 5, reps: 5, rest_seconds: 120, weight_kg: 45 },
+          { exercise: EXERCISES.pullup, sets: 4, reps: 10, rest_seconds: 90 },
+          { exercise: EXERCISES.barbell_bench_press, sets: 3, reps: 10, rest_seconds: 90, weight_kg: 65 },
+          { exercise: EXERCISES.plank, sets: 3, reps: '60s', rest_seconds: 45 },
+        ],
+      },
+    ],
+  },
+
+  // ── ADVANCED / GYM / FAT LOSS ─────────────────────────────────────────────
+  {
+    id: 'plan_advanced_gym_fatloss',
+    name: 'Shred Elite — Advanced Cut',
+    description: '8-week advanced cutting program combining strength and conditioning',
+    goal: 'fat_loss',
+    environment: 'gym',
+    level: 'advanced',
+    duration_weeks: 8,
+    workouts_per_week: 5,
+    workouts: [
+      {
+        id: 'w_agf_day1',
+        name: 'Heavy Compound + HIIT',
+        description: 'Strength base followed by metabolic conditioning',
+        duration_minutes: 70,
+        difficulty: 'advanced',
+        goal: 'fat_loss',
+        environment: 'gym',
+        xp_reward: 300,
+        is_premium: true,
+        day_of_week: 1,
+        exercises: [
+          { exercise: EXERCISES.barbell_squat, sets: 5, reps: 5, rest_seconds: 120, weight_kg: 100 },
+          { exercise: EXERCISES.deadlift, sets: 4, reps: 3, rest_seconds: 150, weight_kg: 120 },
+          { exercise: EXERCISES.burpee, sets: 4, reps: 12, rest_seconds: 30 },
+          { exercise: EXERCISES.mountain_climber, sets: 4, reps: '45s', rest_seconds: 20 },
+        ],
+      },
+    ],
+  },
+];
+
+// ─── Plan Selector ────────────────────────────────────────────────────────────
+
+export function getWorkoutPlan(
+  level: string,
+  environment: string,
+  goal: string
+): WorkoutPlan | null {
+  return (
+    WORKOUT_PLANS.find(
+      (plan) =>
+        plan.level === level &&
+        plan.environment === environment &&
+        plan.goal === goal
+    ) ??
+    WORKOUT_PLANS.find(
+      (plan) => plan.level === level && plan.environment === environment
+    ) ??
+    WORKOUT_PLANS.find((plan) => plan.level === level) ??
+    WORKOUT_PLANS[0]
+  );
+}
